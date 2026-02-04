@@ -60,7 +60,7 @@ export default function Login() {
     };
 
     return (
-        <div className="auth-container" style={{ maxWidth: '400px', margin: '2rem auto' }}>
+        <div className="auth-container" style={{ maxWidth: '400px', margin: '2rem auto', marginLeft : "5rem" }}>
             <h2>{isLogin ? 'Connexion' : 'Inscription'}</h2>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {!isLogin && (

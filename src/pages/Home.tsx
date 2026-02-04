@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { MOCK_VIDEOS } from '../services/videoService';
 import { VideoCard } from '../components/VideoCard';
 
+
 export default function Home() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedType, setSelectedType] = useState('ALL');

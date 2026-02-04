@@ -5,6 +5,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import('./pages/Login'));
 const Watchlist = lazy(() => import('./pages/Watchlist'));
+const VideoDetails = lazy(() => import('./pages/VideoDetails'));
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/video/:id" element={<VideoDetails />} />
           <Route 
             path="/watchlist" 
             element={

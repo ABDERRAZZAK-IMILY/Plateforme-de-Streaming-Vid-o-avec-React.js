@@ -1,41 +1,97 @@
 import { useParams } from 'react-router-dom';
-import { MOCK_VIDEOS } from '../services/videoService';
+import { useEffect, useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '../hooks/useAuth';
 import swal from "sweetalert";
 
+const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
+
+interface Video {
+    id: string;
+    title: string;
+    trailerUrl: string;
+    releaseYear: number;
+    duration: string;
+    category: string;
+    description: string;
+    director: string;
+    cast: string[];
+}
 
 export default function VideoDetails() {
-
     const { id } = useParams();
     const { currentUser } = useAuth();
-    const [watchlist, setWatchlist] = useLocalStorage<string[]>('watchlist', []);
-    
-    const video = MOCK_VIDEOS.find(v => v.id === id);
+    const [watchList, setWatchList] = useLocalStorage<string[]>('watchList', []);
+    const [video, setVideo] = useState<Video | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    if (!video) return <div>Vidéo non trouvée.</div>;
+    useEffect(() => {
+        const fetchSingleVideo = async () => {
+            if (!id) return;
+            setLoading(true);
+            try {
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=${API_KEY}`);
+                const data = await res.json();
+                
+                if (data.items && data.items[0]) {
+                    const item = data.items[0];
+                    setVideo({
+                        id: item.id,
+                        title: item.snippet.title,
+                        trailerUrl: `https://www.youtube.com/embed/${item.id}`,
+                        releaseYear: new Date(item.snippet.publishedAt).getFullYear(),
+                        duration: '2h 15m', 
+                        category: 'Film', 
+                        description: item.snippet.description,
+                        director: item.snippet.channelTitle,
+                        cast: ['YouTube Creator'],
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching video:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const isInWatchlist = watchlist.includes(video.id);
+        fetchSingleVideo();
+    }, [id]);
 
-    const toggleWatchlist = () => {
+    if (loading) return (
+        <div className="flex justify-center items-center min-h-[60vh]">
+            <span className="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+    );
+
+    if (!video) return (
+        <div className="alert alert-error max-w-lg mx-auto mt-10">
+            <span>Vidéo non trouvée.</span>
+        </div>
+    );
+
+    const isInWatchList = watchList.includes(video.id);
+
+    const toggleWatchList = () => {
         if (!currentUser) {
             swal("Attention", "Connectez-vous pour gérer votre liste", "warning");
             return;
         }
         
-        if (isInWatchlist) {
-            setWatchlist(watchlist.filter(vidId => vidId !== video.id));
+        if (isInWatchList) {
+            setWatchList(watchList.filter(vidId => vidId !== video.id));
+            swal("Succès", "Retiré de votre liste", "success");
         } else {
-            setWatchlist([...watchlist, video.id]);
+            setWatchList([...watchList, video.id]);
+            swal("Succès", "Ajouté à votre liste", "success");
         }
     };
 
     return (
-        <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto' }}>
-            <div className="video-container" style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
+        <div className="container mx-auto p-4 md:p-8 max-w-5xl">
+            <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-2xl bg-black">
                 <iframe
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                    src={video.trailerUrl}
+                    className="w-full h-full"
+                    src={`${video.trailerUrl}?autoplay=1`}
                     title={video.title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -43,19 +99,31 @@ export default function VideoDetails() {
                 ></iframe>
             </div>
 
-            <div style={{ marginTop: '20px', textAlign: 'left' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h1>{video.title}</h1>
-                    <button onClick={toggleWatchlist}>
-                        {isInWatchlist ? 'Retirer de ma liste' : 'Ajouter à ma liste'}
+            <div className="mt-8 space-y-4">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <h1 className="text-3xl font-bold">{video.title}</h1>
+                    <button 
+                        onClick={toggleWatchList}
+                        className={`btn ${isInWatchList ? 'btn-outline btn-error' : 'btn-primary'}`}
+                    >
+                        {isInWatchList ? 'Retirer de ma liste' : 'Ajouter à ma liste'}
                     </button>
                 </div>
                 
-                <p style={{ color: '#aaa' }}>{video.releaseYear} | {video.duration} | {video.category}</p>
-                <p style={{ fontSize: '1.1rem' }}>{video.description}</p>
+                <div className="flex gap-2">
+                    <div className="badge badge-secondary">{video.releaseYear}</div>
+                    <div className="badge badge-outline">{video.duration}</div>
+                    <div className="badge badge-ghost">{video.category}</div>
+                </div>
+
+                <div className="divider">Description</div>
                 
-                <div style={{ marginTop: '20px', borderTop: '1px solid #444', paddingTop: '10px' }}>
-                    <p><strong>Réalisateur:</strong> {video.director}</p>
+                <p className="text-lg leading-relaxed opacity-80 whitespace-pre-wrap">
+                    {video.description}
+                </p>
+                
+                <div className="bg-base-200 p-6 rounded-xl space-y-2 mt-6">
+                    <p><strong>Réalisateur:</strong> <span className="text-primary">{video.director}</span></p>
                     <p><strong>Casting:</strong> {video.cast.join(', ')}</p>
                 </div>
             </div>

@@ -2,6 +2,8 @@ import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
+import { Header } from './components/Header';
+
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import('./pages/Login'));
 const Watchlist = lazy(() => import('./pages/Watchlist'));
@@ -10,6 +12,7 @@ const VideoDetails = lazy(() => import('./pages/VideoDetails'));
 function App() {
   return (
     <Router>
+      <Header/>
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<Home />} />

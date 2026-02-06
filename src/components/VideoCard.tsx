@@ -4,18 +4,19 @@ import { Link } from 'react-router-dom';
 interface Props {
     video: Video;
 }
-
 export const VideoCard = ({ video }: Props) => {
     return (
-        <Link to={`/video/${video.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-        <div className="video-card" style={{ border: '1px solid #444', borderRadius: '8px', overflow: 'hidden' }}>
-            <img src={video.thumbnailUrl} alt={video.title} style={{ width: '100%', height: 'auto' }} />
-            <div style={{ padding: '10px' }}>
-                <h3 style={{ margin: '5px 0' }}>{video.title}</h3>
-                <p style={{ fontSize: '0.8rem', color: '#aaa' }}>{video.releaseYear} • {video.category}</p>
-                <div style={{ color: '#ffd700' }}>★ {video.rating}</div>
+        <Link to={`/video/${video.id}`} className="card card-compact bg-base-100 shadow-xl hover:scale-105 transition-transform">
+            <figure>
+                <img src={video.thumbnailUrl} alt={video.title} className="w-full aspect-video object-cover" />
+            </figure>
+            <div className="card-body">
+                <h2 className="card-title text-sm">{video.title}</h2>
+                <p className="text-xs opacity-70">{video.releaseYear} • {video.category}</p>
+                <div className="card-actions justify-end">
+                    <div className="badge badge-outline text-warning">★ {video.rating}</div>
+                </div>
             </div>
-        </div>
         </Link>
     );
 };

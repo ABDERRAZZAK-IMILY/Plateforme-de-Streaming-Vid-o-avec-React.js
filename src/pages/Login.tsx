@@ -60,47 +60,61 @@ export default function Login() {
     };
 
     return (
-        <div className="auth-container" style={{ maxWidth: '400px', margin: '2rem auto', marginLeft : "5rem" }}>
-            <h2>{isLogin ? 'Connexion' : 'Inscription'}</h2>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {!isLogin && (
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="Nom d'utilisateur"
-                            value={formData.username}
-                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        />
-                        {errors.username && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.username}</p>}
-                    </div>
-                )}
-                <div>
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        required
-                    />
-                    {errors.email && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.email}</p>}
+        <div className="min-h-screen flex items-center justify-center bg-base-200">
+            <div className="card w-full max-w-sm shadow-2xl bg-base-100">
+                <div className="card-body">
+                    <h2 className="card-title justify-center text-2xl font-bold">
+                        {isLogin ? 'Connexion' : 'Inscription'}
+                    </h2>
+                    <form onSubmit={handleSubmit} className="form-control gap-4">
+                        {!isLogin && (
+                            <div>
+                                <input
+                                    type="text"
+                                    placeholder="Nom d'utilisateur"
+                                    className={`input input-bordered w-full ${errors.username ? 'input-error' : ''}`}
+                                    value={formData.username}
+                                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                                />
+                                {errors.username && <span className="label-text-alt text-error mt-1">{errors.username}</span>}
+                            </div>
+                        )}
+                        <div>
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                required
+                            />
+                            {errors.email && <span className="label-text-alt text-error mt-1">{errors.email}</span>}
+                        </div>
+                        <div>
+                            <input
+                                type="password"
+                                placeholder="Mot de passe"
+                                className={`input input-bordered w-full ${errors.password ? 'input-error' : ''}`}
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                required
+                            />
+                            {errors.password && <span className="label-text-alt text-error mt-1">{errors.password}</span>}
+                        </div>
+                        <button 
+                            type="submit" 
+                            className="btn btn-primary w-full"
+                            disabled={!!errors.email || !!errors.password || (!isLogin && !!errors.username)}
+                        >
+                            {isLogin ? 'Se connecter' : "S'inscrire"}
+                        </button>
+                    </form>
+                    <div className="divider">OR</div>
+                    <p onClick={() => setIsLogin(!isLogin)} className="text-center link link-hover text-sm">
+                        {isLogin ? "Pas de compte ? S'inscrire" : "Déjà un compte ? Se connecter"}
+                    </p>
                 </div>
-                <div>
-                    <input
-                        type="password"
-                        placeholder="Mot de passe"
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        required
-                    />
-                    {errors.password && <p style={{ color: 'red', fontSize: '0.8rem' }}>{errors.password}</p>}
-                </div>
-                <button type="submit" disabled={!!errors.email || !!errors.password || (!isLogin && !!errors.username)}>
-                    {isLogin ? 'Se connecter' : "S'inscrire"}
-                </button>
-            </form>
-            <p onClick={() => setIsLogin(!isLogin)} style={{ cursor: 'pointer', marginTop: '1rem', textDecoration: 'underline' }}>
-                {isLogin ? "Pas de compte ? S'inscrire" : "Déjà un compte ? Se connecter"}
-            </p>
+            </div>
         </div>
     );
 }

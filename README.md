@@ -164,18 +164,6 @@ The app will be available at **http://localhost:5173** (default Vite port).
 
 ---
 
-## 📸 Screenshots
-
-<!-- Add your screenshots here -->
-
-| Home Page | Video Details | Watchlist |
-|---|---|---|
-| ![Home](screenshots/home.png) | ![Details](screenshots/details.png) | ![Watchlist](screenshots/watchlist.png) |
-
-> Replace the placeholder paths above with actual screenshots of your application.
-
----
-
 ## 🏗 Architecture
 
 ```
@@ -216,20 +204,6 @@ The app will be available at **http://localhost:5173** (default Vite port).
 | `npm run build` | Type-check with TypeScript and build for production |
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run ESLint across the project |
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! To get started:
-
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/my-feature`
-3. **Commit** your changes: `git commit -m "feat: add my feature"`
-4. **Push** to the branch: `git push origin feature/my-feature`
-5. **Open** a Pull Request
-
-Please make sure your code passes linting (`npm run lint`) before submitting.
 
 ---
 
